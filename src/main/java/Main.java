@@ -33,8 +33,7 @@ public class Main {
                     String message = matcher.group(1);
                     String response = String.format("HTTP/1.1 200 OK\\r\\n\\r\\n" +
                             "Content-Type: text/plain\\r\\n" +
-                            "Content-Length: %d\\r\\n\\r\\n%s", message.length(), message);
-                    System.out.println(response);
+                            "Content-Length: %d\\r\\n\\r\\n%s\\r\\n", message.length(), message);
                     out.print(response);
                 } else {
                     out.print("HTTP/1.1 404 Not Found\r\n\r\n");
