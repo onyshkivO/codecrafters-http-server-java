@@ -26,9 +26,12 @@ public class Main {
                 String request = in.readLine();
                 String[] reqParts = request.split("\r\n");
                 String reqLine = reqParts[0];
-                String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' '));
+                String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
                 Pattern pattern = Pattern.compile("\\/echo\\/(.*)");
                 Matcher matcher = pattern.matcher(path);
+                System.out.println(path);
+                System.out.println(matcher.matches());
+                System.out.println(matcher.group(1));
                 if (matcher.matches()) {
                     String message = matcher.group(1);
                     out.print(String.format("HTTP/1.1 200 OK\r\n\r\n" +
