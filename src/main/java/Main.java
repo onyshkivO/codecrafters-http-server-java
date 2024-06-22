@@ -30,8 +30,17 @@ public class Main {
             clientSocket = serverSocket.accept(); // Wait for connection from client.
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            parseRequest();
+//            parseRequest();
             reqLine = in.readLine();
+            String line = in.readLine();
+            while (line != null) {
+                Matcher headerMatcher = headerPattern.matcher(line);
+                if (headerMatcher.matches()) {
+                    headers.put(headerMatcher.group(1), headerMatcher.group(2));
+                }else
+                    break;
+                line = in.readLine();
+            }
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
 
             if ("/".equals(path)) {
