@@ -22,8 +22,8 @@ public class Main {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             String request = in.readLine();
-            String[] reqParts = request.split("\r\n");
-            String[] reqParts2 = request.split("\r\n\n");
+            String[] reqParts = request.split("\\r\\n");
+            String[] reqParts2 = request.split("\\r\\n\\r\\n");
             System.out.println(Arrays.toString(reqParts));
             System.out.println(Arrays.toString(reqParts2));
             String reqLine = reqParts[0];
