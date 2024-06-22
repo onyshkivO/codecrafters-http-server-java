@@ -34,6 +34,7 @@ public class Main {
 
             parseRequest();
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
+            System.out.println(path);
             if ("/".equals(path)) {
                 out.print("HTTP/1.1 200 OK\r\n\r\n");
             } else if (path.startsWith("/echo")) {
