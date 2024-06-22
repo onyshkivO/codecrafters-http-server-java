@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,24 +19,31 @@ public class Main {
         Socket clientSocket;
         PrintWriter out;
         BufferedReader in;
+        Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
+
         try {
             serverSocket = new ServerSocket(4221);
             serverSocket.setReuseAddress(true);
             clientSocket = serverSocket.accept(); // Wait for connection from client.
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            StringBuilder stringBuilder = new StringBuilder();
+            Map<String, String> headers = new HashMap<>();
+
+
+            String reqBody = null;
+            String reqLine = in.readLine();
             String line = in.readLine();
             while (line != null) {
-                stringBuilder.append(line);
+                System.out.println("read line |" + line);
+                Matcher headerMatcher = headerPattern.matcher(line);
+                if (headerMatcher.matches()) {
+                    headers.put(headerMatcher.group(1), headerMatcher.group(2));
+                } else {
+                    reqBody = line;
+//                    break;
+                }
                 line = in.readLine();
             }
-            String request = stringBuilder.toString();
-            String[] reqParts = request.split("\\r\\n");
-            String[] reqParts2 = request.split("\\r\\n\\r\\n");
-            System.out.println(Arrays.toString(reqParts));
-            System.out.println(Arrays.toString(reqParts2));
-            String reqLine = reqParts[0];
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
 
             if ("/".equals(path)) {
@@ -44,7 +53,7 @@ public class Main {
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
-                String userAgent = request.substring(reqLine.indexOf("User-Agent:")).trim();
+                String userAgent = headers.get("User-Agent");
                 System.out.println(userAgent);
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         userAgent.length() + "\r\n\r\n" + userAgent);
