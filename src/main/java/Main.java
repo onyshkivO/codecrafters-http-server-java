@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-//    static ServerSocket serverSocket;
+    //    static ServerSocket serverSocket;
 //    static Socket clientSocket;
 //    static PrintWriter out;
     static BufferedReader in;
@@ -43,15 +43,8 @@ public class Main {
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
                 String userAgent = headers.get("User-Agent");
-                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length:\r\n%s", userAgent);
-                System.out.println(33);
-                System.out.println(format);
-//                String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-//                        userAgent.length() + "\r\n\r\n" + userAgent;
-                System.out.println(3);
-//                System.out.println(s);
-//                clientSocket.getOutputStream().write(s.getBytes());
-                System.out.println(4);
+                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + userAgent.length() + "\r\n\r\n%s", userAgent);
+                out.print(format);
 
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
