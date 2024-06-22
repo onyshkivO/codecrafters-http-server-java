@@ -14,8 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-    static ServerSocket serverSocket;
-    static Socket clientSocket;
+//    static ServerSocket serverSocket;
+//    static Socket clientSocket;
 //    static PrintWriter out;
     static BufferedReader in;
     static Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
@@ -26,9 +26,9 @@ public class Main {
     public static void main(String[] args) {
         PrintWriter out;
         try {
-            serverSocket = new ServerSocket(4221);
+            ServerSocket serverSocket = new ServerSocket(4221);
             serverSocket.setReuseAddress(true);
-            clientSocket = serverSocket.accept(); // Wait for connection from client.
+            Socket clientSocket = serverSocket.accept(); // Wait for connection from client.
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
@@ -45,7 +45,6 @@ public class Main {
                 String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         userAgent.length() + "\r\n\r\n" + userAgent;
                 clientSocket.getOutputStream().write(s.getBytes());
-//                out.print();
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
