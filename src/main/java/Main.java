@@ -34,7 +34,6 @@ public class Main {
             String reqLine = in.readLine();
             String line = in.readLine();
             while (line != null) {
-                System.out.println("read line |" + line);
                 Matcher headerMatcher = headerPattern.matcher(line);
                 if (headerMatcher.matches()) {
                     headers.put(headerMatcher.group(1), headerMatcher.group(2));
@@ -56,7 +55,6 @@ public class Main {
                 String userAgent = headers.get("User-Agent");
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         userAgent.length() + "\r\n\r\n" + userAgent);
-                out.flush();
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
