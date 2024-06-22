@@ -38,9 +38,9 @@ public class Main {
                 Matcher headerMatcher = headerPattern.matcher(line);
                 if (headerMatcher.matches()) {
                     headers.put(headerMatcher.group(1), headerMatcher.group(2));
-                } else {
-                    reqBody = line;
-//                    break;
+                } else if (line.isBlank()) {
+                    reqBody = in.readLine();
+                    break;
                 }
                 line = in.readLine();
             }
@@ -54,7 +54,6 @@ public class Main {
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
                 String userAgent = headers.get("User-Agent");
-                System.out.println(userAgent);
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         userAgent.length() + "\r\n\r\n" + userAgent);
             } else {
