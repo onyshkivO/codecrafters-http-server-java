@@ -16,6 +16,7 @@ public class Main {
             clientSocket = serverSocket.accept(); // Wait for connection from client.
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             out.print("HTTP/1.1 200 OK\r\n\r\n");
+            out.close();
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
         }
