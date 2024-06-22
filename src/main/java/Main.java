@@ -34,7 +34,7 @@ public class Main {
                 String response = String.format("HTTP/1.1 200 OK\\r\\n\\r\\n" +
                         "Content-Type: text/plain\\r\\n" +
                         "Content-Length: %d\\r\\n\\r\\n"+message, message.length());
-                out.print(response);
+                out.print(response.getBytes());
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
