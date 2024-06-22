@@ -48,8 +48,7 @@ public class Main {
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
-            out.flush();
-
+//            out.flush();
             out.close();
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
