@@ -46,11 +46,14 @@ public class Main {
                 String userAgent = headers.get("User-Agent");
                 System.out.println(2);
                 System.out.println(userAgent);
-                String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-                        userAgent.length() + "\r\n\r\n" + userAgent;
+                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
+                System.out.println(33);
+                System.out.println(format);
+//                String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
+//                        userAgent.length() + "\r\n\r\n" + userAgent;
                 System.out.println(3);
-                System.out.println(s);
-                clientSocket.getOutputStream().write(s.getBytes());
+//                System.out.println(s);
+//                clientSocket.getOutputStream().write(s.getBytes());
                 System.out.println(4);
 
             } else {
