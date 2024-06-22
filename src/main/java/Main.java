@@ -43,8 +43,10 @@ public class Main {
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
                 String userAgent = headers.get("User-Agent");
-                out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-                        userAgent.length() + "\r\n\r\n" + userAgent);
+                String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
+                        userAgent.length() + "\r\n\r\n" + userAgent;
+                clientSocket.getOutputStream().write(s.getBytes());
+                out.print();
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
