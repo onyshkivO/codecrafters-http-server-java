@@ -22,7 +22,7 @@ public class Main {
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 1; i++) {
                 String request = in.readLine();
                 String[] reqParts = request.split("\r\n");
                 String reqLine = reqParts[0];
