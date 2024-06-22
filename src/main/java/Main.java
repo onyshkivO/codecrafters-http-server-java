@@ -43,7 +43,7 @@ public class Main {
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
                 String userAgent = headers.get("User-Agent");
-                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: \r\n\r\n%s", userAgent);
+                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
                 System.out.println(userAgent.length());
                 System.out.println(format);
                 out.print("123");
