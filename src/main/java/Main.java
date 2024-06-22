@@ -45,6 +45,7 @@ public class Main {
                 System.out.println(1);
                 String userAgent = headers.get("User-Agent");
                 System.out.println(2);
+                System.out.println(userAgent);
                 String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         userAgent.length() + "\r\n\r\n" + userAgent;
                 System.out.println(3);
