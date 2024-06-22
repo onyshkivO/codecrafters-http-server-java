@@ -24,8 +24,8 @@ public class Main {
                 String request = in.readLine();
                 String[] reqParts = request.split("\r\n");
                 String reqLine = reqParts[0];
-                System.out.println(reqLine);
-                String path = reqLine.substring(reqLine.indexOf(' '), reqLine.indexOf(' ', reqLine.indexOf(' ') + 1));
+                String path = reqLine.substring(4, reqLine.indexOf(' '));
+                System.out.println(path);
                 if ("/".equals(path)) {
                     out.print("HTTP/1.1 200 OK\r\n\r\n");
                 } else {
