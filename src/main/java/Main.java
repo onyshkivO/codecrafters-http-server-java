@@ -29,13 +29,11 @@ public class Main {
                 String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
                 Pattern pattern = Pattern.compile("\\/echo\\/(.*)");
                 Matcher matcher = pattern.matcher(path);
-                System.out.println(path);
-                System.out.println(matcher.matches());
-                System.out.println(matcher.group(1));
                 if (matcher.matches()) {
                     String message = matcher.group(1);
-                    String response = "HTTP/1.1 200 OKContent-Type: text/plain\\r\\n" +
-                            "Content-Length: " + message.length() + "\\r\\n\\r\\n" + message;
+                    String response = String.format("HTTP/1.1 200 OK\\r\\n\\r\\n" +
+                            "Content-Type: text/plain\\r\\n" +
+                            "Content-Length: %d\\r\\n\\r\\n%s", message.length(), message);
                     System.out.println(response);
                     out.print(response);
                 } else {
