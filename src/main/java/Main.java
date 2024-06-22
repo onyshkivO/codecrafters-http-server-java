@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -13,7 +14,8 @@ public class Main {
             // ensures that we don't run into 'Address already in use' errors
             serverSocket.setReuseAddress(true);
             clientSocket = serverSocket.accept(); // Wait for connection from client.
-            System.out.println("accepted new connection");
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            out.print("HTTP/1.1 200 OK\r\n\r\n");
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
         }
