@@ -33,26 +33,22 @@ public class Main {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             parseRequest();
-            String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-                    11 + "\r\n\r\n" + 12;
-            clientSocket.getOutputStream().write(s.getBytes());
-
-//            String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
-//            if ("/".equals(path)) {
-//                out.print("HTTP/1.1 200 OK\r\n\r\n");
-//            } else if (path.startsWith("/echo")) {
-//                String message = path.split("/")[2];
-//                out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-//                        message.length() + "\r\n\r\n" + message);
-//            } else if (path.startsWith("/user-agent")) {
-//                String userAgent = headers.get("User-Agent");
-////                String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-////                        userAgent.length() + "\r\n\r\n" + userAgent;
-//                clientSocket.getOutputStream().write(s.getBytes());
-////                out.print();
-//            } else {
-//                out.print("HTTP/1.1 404 Not Found\r\n\r\n");
-//            }
+            String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
+            if ("/".equals(path)) {
+                out.print("HTTP/1.1 200 OK\r\n\r\n");
+            } else if (path.startsWith("/echo")) {
+                String message = path.split("/")[2];
+                out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
+                        message.length() + "\r\n\r\n" + message);
+            } else if (path.startsWith("/user-agent")) {
+                String userAgent = headers.get("User-Agent");
+                String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
+                        userAgent.length() + "\r\n\r\n" + userAgent;
+                clientSocket.getOutputStream().write(s.getBytes());
+//                out.print();
+            } else {
+                out.print("HTTP/1.1 404 Not Found\r\n\r\n");
+            }
             out.flush();
             out.close();
         } catch (IOException e) {
