@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,9 +26,14 @@ public class Main {
                 String request = in.readLine();
                 String[] reqParts = request.split("\r\n");
                 String reqLine = reqParts[0];
-                String path = reqLine.substring(reqLine.indexOf(' '),reqLine.lastIndexOf(' '));
-                if ("/".equals(path.trim())) {
-                    out.print("HTTP/1.1 200 OK\r\n\r\n");
+                String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' '));
+                Pattern pattern = Pattern.compile("\\/echo\\/(.*)");
+                Matcher matcher = pattern.matcher(path);
+                if (matcher.matches()) {
+                    String message = matcher.group(1);
+                    out.print(String.format("HTTP/1.1 200 OK\r\n\r\n" +
+                            "Content-Type: text/plain\\r\\n" +
+                            "Content-Length: %d\\r\\n\\r\\n%s", message.length(), message));
                 } else {
                     out.print("HTTP/1.1 404 Not Found\r\n\r\n");
                 }
