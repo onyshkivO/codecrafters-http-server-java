@@ -42,11 +42,8 @@ public class Main {
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
-                System.out.println(1);
                 String userAgent = headers.get("User-Agent");
-                System.out.println(2);
-                System.out.println(userAgent);
-                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
+                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length:\r\n%s", userAgent);
                 System.out.println(33);
                 System.out.println(format);
 //                String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
