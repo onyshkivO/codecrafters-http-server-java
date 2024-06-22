@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class Main {
     static ServerSocket serverSocket;
     static Socket clientSocket;
-    static PrintWriter out;
+//    static PrintWriter out;
     static BufferedReader in;
     static Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
     static String reqLine = null;
@@ -24,7 +24,7 @@ public class Main {
     static String reqBody = null;
 
     public static void main(String[] args) {
-
+        PrintWriter out;
         try {
             serverSocket = new ServerSocket(4221);
             serverSocket.setReuseAddress(true);
