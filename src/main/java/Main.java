@@ -44,6 +44,7 @@ public class Main {
                 String userAgent = headers.get("User-Agent");
                 String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         userAgent.length() + "\r\n\r\n" + userAgent;
+                System.out.println(s);
                 clientSocket.getOutputStream().write(s.getBytes());
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
