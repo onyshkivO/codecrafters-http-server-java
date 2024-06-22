@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
-        ServerSocket serverSocket = null;
-        Socket clientSocket = null;
+        ServerSocket serverSocket;
+        Socket clientSocket;
         PrintWriter out;
         BufferedReader in;
         try {
@@ -29,6 +29,9 @@ public class Main {
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
             Pattern pattern = Pattern.compile("\\/echo\\/(.*)");
             Matcher matcher = pattern.matcher(path);
+            if ("/".equals(path.trim())){
+                out.print("HTTP/1.1 200 OK\r\n\r\n");
+            }
             if (matcher.matches()) {
                 String message = matcher.group(1);
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
