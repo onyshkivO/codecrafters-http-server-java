@@ -1,3 +1,5 @@
+import jdk.jfr.Frequency;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -5,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,8 +23,13 @@ public class Main {
             clientSocket = serverSocket.accept(); // Wait for connection from client.
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            String request = in.readLine();
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = in.readLine();
+            while (line != null) {
+                stringBuilder.append(line);
+                line = in.readLine();
+            }
+            String request = stringBuilder.toString();
             String[] reqParts = request.split("\\r\\n");
             String[] reqParts2 = request.split("\\r\\n\\r\\n");
             System.out.println(Arrays.toString(reqParts));
@@ -35,11 +43,10 @@ public class Main {
                 String message = path.split("/")[2];
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         message.length() + "\r\n\r\n" + message);
-            } else if (path.startsWith("/user-agent")){
+            } else if (path.startsWith("/user-agent")) {
 
 
-            }
-            else {
+            } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
             out.flush();
