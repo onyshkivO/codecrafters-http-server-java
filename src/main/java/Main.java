@@ -30,17 +30,7 @@ public class Main {
             clientSocket = serverSocket.accept(); // Wait for connection from client.
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-//            parseRequest();
-            reqLine = in.readLine();
-            String line = in.readLine();
-            while (line != null) {
-                Matcher headerMatcher = headerPattern.matcher(line);
-                if (headerMatcher.matches()) {
-                    headers.put(headerMatcher.group(1), headerMatcher.group(2));
-                }else
-                    break;
-                line = in.readLine();
-            }
+            parseRequest();
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
 
             if ("/".equals(path)) {
@@ -68,7 +58,7 @@ public class Main {
     private static void parseRequest() throws IOException {
         reqLine = in.readLine();
         String line = in.readLine();
-        while (line != null) {
+        while (line != null && !line.isBlank()) {
             Matcher headerMatcher = headerPattern.matcher(line);
             if (headerMatcher.matches()) {
                 headers.put(headerMatcher.group(1), headerMatcher.group(2));
