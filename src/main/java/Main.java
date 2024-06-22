@@ -46,8 +46,9 @@ public class Main {
 //                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
                 System.out.println(userAgent.length());
 //                System.out.println(format);
-                out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-                        userAgent.length() + "\r\n\r\n" + userAgent);
+                out.print("HTTP/1.1 200 OK\r\n\r\n");
+//                out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
+//                        userAgent.length() + "\r\n\r\n" + userAgent);
 
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
