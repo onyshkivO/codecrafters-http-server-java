@@ -44,8 +44,9 @@ public class Main {
                 out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
-
-
+                String userAgent = request.substring(reqLine.indexOf("User-Agent:")).trim();
+                out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
+                        userAgent.length() + "\r\n\r\n" + userAgent);
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
