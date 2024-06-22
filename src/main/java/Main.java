@@ -14,9 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-    //    static ServerSocket serverSocket;
-//    static Socket clientSocket;
-//    static PrintWriter out;
+    static ServerSocket serverSocket;
+    static Socket clientSocket;
+    static PrintWriter out;
     static BufferedReader in;
     static Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
     static String reqLine = null;
@@ -24,15 +24,14 @@ public class Main {
     static String reqBody = null;
 
     public static void main(String[] args) {
-        PrintWriter out;
         try {
-            ServerSocket serverSocket = new ServerSocket(4221);
+            serverSocket = new ServerSocket(4221);
             serverSocket.setReuseAddress(true);
-            Socket clientSocket = serverSocket.accept(); // Wait for connection from client.
+            clientSocket = serverSocket.accept(); // Wait for connection from client.
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
             parseRequest();
+            reqLine = in.readLine();
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
 
             if ("/".equals(path)) {
@@ -43,12 +42,10 @@ public class Main {
                         message.length() + "\r\n\r\n" + message);
             } else if (path.startsWith("/user-agent")) {
                 String userAgent = headers.get("User-Agent");
-                String format = String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
-                System.out.println(format);
+                String format = String.format("HTTP/1.1 200 OK\r\n" +
+                        "Content-Type: text/plain\r\n" +
+                        "Content-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
                 out.print(format);
-//                out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-//                        userAgent.length() + "\r\n\r\n" + userAgent);
-
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
@@ -66,9 +63,6 @@ public class Main {
             Matcher headerMatcher = headerPattern.matcher(line);
             if (headerMatcher.matches()) {
                 headers.put(headerMatcher.group(1), headerMatcher.group(2));
-            } else if (line.isBlank()) {
-                reqBody = in.readLine();
-                break;
             }
             line = in.readLine();
         }
