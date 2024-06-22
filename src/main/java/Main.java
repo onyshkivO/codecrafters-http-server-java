@@ -33,7 +33,10 @@ public class Main {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             parseRequest();
-
+            String s = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
+                    11 + "\r\n\r\n" + 12;
+            clientSocket.getOutputStream().write(s.getBytes());
+            return;
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
             if ("/".equals(path)) {
                 out.print("HTTP/1.1 200 OK\r\n\r\n");
@@ -50,7 +53,7 @@ public class Main {
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
             }
-//            out.flush();
+            out.flush();
             out.close();
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
