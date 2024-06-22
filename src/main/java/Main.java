@@ -14,12 +14,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
+    static ServerSocket serverSocket;
+    static Socket clientSocket;
+    static PrintWriter out;
+    static BufferedReader in;
+    static Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
+    static String reqLine = null;
+    static Map<String, String> headers = new HashMap<>();
+    static String reqBody = null;
+
     public static void main(String[] args) {
-        ServerSocket serverSocket;
-        Socket clientSocket;
-        PrintWriter out;
-        BufferedReader in;
-        Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
 
         try {
             serverSocket = new ServerSocket(4221);
@@ -27,24 +31,10 @@ public class Main {
             clientSocket = serverSocket.accept(); // Wait for connection from client.
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            Map<String, String> headers = new HashMap<>();
 
+            parseRequest();
 
-            String reqBody = null;
-            String reqLine = in.readLine();
-            String line = in.readLine();
-            while (line != null) {
-                Matcher headerMatcher = headerPattern.matcher(line);
-                if (headerMatcher.matches()) {
-                    headers.put(headerMatcher.group(1), headerMatcher.group(2));
-                } else if (line.isBlank()) {
-                    reqBody = in.readLine();
-                    break;
-                }
-                line = in.readLine();
-            }
             String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
-
             if ("/".equals(path)) {
                 out.print("HTTP/1.1 200 OK\r\n\r\n");
             } else if (path.startsWith("/echo")) {
@@ -63,6 +53,21 @@ public class Main {
             out.close();
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
+        }
+    }
+
+    private static void parseRequest() throws IOException {
+        reqLine = in.readLine();
+        String line = in.readLine();
+        while (line != null) {
+            Matcher headerMatcher = headerPattern.matcher(line);
+            if (headerMatcher.matches()) {
+                headers.put(headerMatcher.group(1), headerMatcher.group(2));
+            } else if (line.isBlank()) {
+                reqBody = in.readLine();
+                break;
+            }
+            line = in.readLine();
         }
     }
 
