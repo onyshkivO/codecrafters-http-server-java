@@ -12,7 +12,6 @@ public class Main {
         try {
             init();
             ExecutorService executorService = Executors.newFixedThreadPool(10);
-            System.out.println(Arrays.toString(args));
             while (true) {
                 executorService.execute(() -> {
                     try {

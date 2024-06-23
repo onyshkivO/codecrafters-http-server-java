@@ -23,7 +23,6 @@ public class Connection {
     public Connection(ServerSocket socket, String[] args) throws IOException {
         clientSocket = socket.accept();
         this.args = args;
-        System.out.println(Arrays.toString(args));
     }
 
     private void parseRequest() throws IOException {
@@ -74,7 +73,7 @@ public class Connection {
         } else if (path.startsWith("/files/")) {
             String filePath = path.split("/")[2];
 
-            if (args.length > 1 && args[0].equals("directory")) {
+            if (args.length > 1 && args[0].equals("--directory")) {
                 filePath = args[1] + filePath;
             }
             switch (method) {
