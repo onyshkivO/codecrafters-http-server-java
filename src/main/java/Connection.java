@@ -4,10 +4,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Connection {
     private Socket clientSocket;
@@ -42,20 +47,36 @@ public class Connection {
         process();
     }
 
-    private void process() {
+    private void process() throws IOException {
         String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
         if ("/".equals(path)) {
             out.print("HTTP/1.1 200 OK\r\n\r\n");
         } else if (path.startsWith("/echo")) {
             String message = path.split("/")[2];
-            out.print("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " +
-                    message.length() + "\r\n\r\n" + message);
+            String response = String.format("HTTP/1.1 200 OK\r\n" +
+                    "Content-Type: text/plain\r\n" +
+                    "Content-Length: %d\r\n\r\n%s", message.length(), message);
+            out.print(response);
         } else if (path.startsWith("/user-agent")) {
             String userAgent = headers.get("User-Agent");
-            String format = String.format("HTTP/1.1 200 OK\r\n" +
+            String response = String.format("HTTP/1.1 200 OK\r\n" +
                     "Content-Type: text/plain\r\n" +
                     "Content-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
-            out.print(format);
+            out.print(response);
+        } else if (path.startsWith("/files/")) {
+            String fileName = path.split("/")[2];
+            Path filePath = Paths.get(fileName);
+            if (Files.exists(filePath)) {
+                Stream<String> lines = Files.lines(filePath);
+                String fileContent = lines.collect(Collectors.joining("\n"));
+                lines.close();
+                String response = String.format("HTTP/1.1 200 OK\r\n" +
+                        "Content-Type: application/octet-stream\r\n" +
+                        "Content-Length: %d\r\n\r\n%s", filePath.toFile().length(), fileContent);
+                out.print(response);
+            } else {
+                out.print("HTTP/1.1 404 Not Found\r\n\r\n");
+            }
         } else {
             out.print("HTTP/1.1 404 Not Found\r\n\r\n");
         }
