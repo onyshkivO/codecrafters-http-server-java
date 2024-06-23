@@ -63,8 +63,6 @@ public class Connection {
         } else if (path.startsWith("/files/")) {
             String fileName = path.split("/")[2];
             Path filePath = Paths.get("/tmp/data/codecrafters.io/http-server-tester/" + fileName);
-            System.out.println(fileName);
-            System.out.println(filePath.toFile().exists());
             if (Files.exists(filePath)) {
                 Stream<String> lines = Files.lines(filePath);
                 String fileContent = lines.collect(Collectors.joining("\n"));
