@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,9 +12,12 @@ public class Main {
         try {
             init();
             ExecutorService executorService = Executors.newFixedThreadPool(10);
+            System.out.println(Arrays.toString(args));
             while (true) {
-                executorService.submit(() -> {
+                executorService.execute(() -> {
                     try {
+                        System.out.println(Thread.currentThread().getName());
+                        System.out.println(Arrays.toString(args));
                         new Connection(serverSocket, args).processRequest();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
