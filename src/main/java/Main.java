@@ -10,11 +10,12 @@ public class Main {
     public static void main(String[] args) {
         try {
             init();
+
             ExecutorService executorService = Executors.newCachedThreadPool();
             while (true) {
                 executorService.submit(() -> {
                     try {
-                        new Connection(serverSocket).processRequest();
+                        new Connection(serverSocket, args).processRequest();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

@@ -19,9 +19,11 @@ public class Connection {
     private String reqLine = null;
     private Map<String, String> headers = new HashMap<>();
     private String reqBody = null;
+    private String[] args;
 
-    public Connection(ServerSocket socket) throws IOException {
+    public Connection(ServerSocket socket, String[] args) throws IOException {
         clientSocket = socket.accept();
+        this.args = args;
     }
 
     private void parseRequest() throws IOException {
@@ -62,14 +64,13 @@ public class Connection {
             out.print(response);
         } else if (path.startsWith("/files/")) {
             String fileName = path.split("/")[2];
-            Path filePath = Paths.get("/tmp/data/codecrafters.io/http-server-tester/" + fileName);
-            if (Files.exists(filePath)) {
-                Stream<String> lines = Files.lines(filePath);
-                String fileContent = lines.collect(Collectors.joining("\n"));
-                lines.close();
+            String directory = args[1];
+            File file = new File(directory + fileName);
+            if (file.exists()) {
+                String fileContent = new String(Files.readAllBytes(file.toPath()));
                 String response = String.format("HTTP/1.1 200 OK\r\n" +
                         "Content-Type: application/octet-stream\r\n" +
-                        "Content-Length: %d\r\n\r\n%s", filePath.toFile().length(), fileContent);
+                        "Content-Length: %d\r\n\r\n%s", fileContent.length(), fileContent);
                 out.print(response);
             } else {
                 out.print("HTTP/1.1 404 Not Found\r\n\r\n");
