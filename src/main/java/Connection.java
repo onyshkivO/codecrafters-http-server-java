@@ -2,14 +2,10 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Connection {
     private Socket clientSocket;
@@ -19,6 +15,8 @@ public class Connection {
     private String reqLine = null;
     private Map<String, String> headers = new HashMap<>();
     private String reqBody = null;
+    private String method;
+    private String path;
     private String[] args;
 
     public Connection(ServerSocket socket, String[] args) throws IOException {
@@ -30,6 +28,8 @@ public class Connection {
         out = new PrintWriter(clientSocket.getOutputStream());
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         reqLine = in.readLine();
+        path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
+        method = reqLine.substring(0, reqLine.indexOf(' '));
         Matcher headerMatcher;
         String line = in.readLine();
         while (line != null && !line.isBlank()) {
@@ -39,6 +39,15 @@ public class Connection {
             }
             line = in.readLine();
         }
+        if (headers.containsKey("Content-Length")) {
+            int contentLength = Integer.parseInt(headers.get("Content-Length"));
+            char[] buffer = new char[contentLength];
+            int bytesRead = in.read(buffer, 0, contentLength);
+            if (bytesRead != -1) {
+                reqBody = String.valueOf(buffer);
+            }
+        }
+        System.out.println(reqBody);
     }
 
     public void processRequest() throws IOException {
@@ -47,7 +56,7 @@ public class Connection {
     }
 
     private void process() throws IOException {
-        String path = reqLine.substring(reqLine.indexOf(' '), reqLine.lastIndexOf(' ')).trim();
+
         if ("/".equals(path)) {
             out.print("HTTP/1.1 200 OK\r\n\r\n");
         } else if (path.startsWith("/echo")) {
@@ -65,15 +74,13 @@ public class Connection {
         } else if (path.startsWith("/files/")) {
             String fileName = path.split("/")[2];
             String directory = args[1];
-            File file = new File(directory + fileName);
-            if (file.exists()) {
-                String fileContent = new String(Files.readAllBytes(file.toPath()));
-                String response = String.format("HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: application/octet-stream\r\n" +
-                        "Content-Length: %d\r\n\r\n%s", fileContent.length(), fileContent);
-                out.print(response);
-            } else {
-                out.print("HTTP/1.1 404 Not Found\r\n\r\n");
+            switch (method) {
+                case "GET":
+                    getFile(directory + fileName);
+                    break;
+                case "POST":
+                    createFile(directory + fileName);
+                    break;
             }
         } else {
             out.print("HTTP/1.1 404 Not Found\r\n\r\n");
@@ -82,4 +89,25 @@ public class Connection {
         out.close();
     }
 
+    private void getFile(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (file.exists()) {
+            String fileContent = new String(Files.readAllBytes(file.toPath()));
+            String response = String.format("HTTP/1.1 200 OK\r\n" +
+                    "Content-Type: application/octet-stream\r\n" +
+                    "Content-Length: %d\r\n\r\n%s", fileContent.length(), fileContent);
+            out.print(response);
+        } else {
+            out.print("HTTP/1.1 404 Not Found\r\n\r\n");
+        }
+    }
+
+    private void createFile(String filePath) throws IOException {
+        File file = new File(filePath);
+        file.createNewFile();
+        FileWriter myWriter = new FileWriter(file);
+        myWriter.write(reqBody);
+        myWriter.close();
+        out.print("HTTP/1.1 201 Created\r\n\r\n");
+    }
 }

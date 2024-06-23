@@ -11,7 +11,7 @@ public class Main {
         try {
             init();
 
-            ExecutorService executorService = Executors.newCachedThreadPool();
+            ExecutorService executorService = Executors.newFixedThreadPool(10);
             while (true) {
                 executorService.submit(() -> {
                     try {
