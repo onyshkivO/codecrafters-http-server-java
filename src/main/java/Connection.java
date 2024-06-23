@@ -2,9 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,17 +10,19 @@ public class Connection {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
-    private Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
+    private final Pattern headerPattern = Pattern.compile("([\\w-]+): (.*)");
     private String reqLine = null;
     private Map<String, String> headers = new HashMap<>();
     private String reqBody = null;
     private String method;
     private String path;
     private String[] args;
+    private Set<String> supportedEncoding = Set.of("gzip");
 
     public Connection(ServerSocket socket, String[] args) throws IOException {
         clientSocket = socket.accept();
         this.args = args;
+
     }
 
     private void parseRequest() throws IOException {
@@ -59,12 +59,13 @@ public class Connection {
         if ("/".equals(path)) {
             out.print("HTTP/1.1 200 OK\r\n\r\n");
         } else if (path.startsWith("/echo")) {
-            String encodingHeadersStr = headers.get("Accept-Encoding");
+            String encodingHeadersStr = headers.getOrDefault("Accept-Encoding", "");
             String message = path.split("/")[2];
+            Optional<String> encodingOptional = Arrays.stream(encodingHeadersStr.split(", ")).filter(encoding -> supportedEncoding.contains(encoding)).findFirst();
+            String encodingHeader = encodingOptional.map(s -> String.format("Content-Encoding: %s\r\n", s)).orElse("");
             String response = String.format("HTTP/1.1 200 OK\r\n" +
                     "Content-Type: text/plain\r\n%s" +
-                    "Content-Length: %d\r\n\r\n%s", encodingHeadersStr != null && Arrays.asList(encodingHeadersStr.split(", ")).contains("gzip") ? "Content-Encoding: gzip\r\n" : "", message.length(), message);
-
+                    "Content-Length: %d\r\n\r\n%s",encodingHeader, message.length(), message);
             out.print(response);
         } else if (path.startsWith("/user-agent")) {
             String userAgent = headers.get("User-Agent");
