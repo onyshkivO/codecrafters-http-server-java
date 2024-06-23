@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -22,6 +23,7 @@ public class Connection {
     public Connection(ServerSocket socket, String[] args) throws IOException {
         clientSocket = socket.accept();
         this.args = args;
+        System.out.println(Arrays.toString(args));
     }
 
     private void parseRequest() throws IOException {
