@@ -47,7 +47,6 @@ public class Connection {
                 reqBody = String.valueOf(buffer);
             }
         }
-        System.out.println(reqBody);
     }
 
     public void processRequest() throws IOException {
@@ -56,8 +55,6 @@ public class Connection {
     }
 
     private void process() throws IOException {
-        System.out.println(path);
-        System.out.println(path.startsWith("/files/"));
         if ("/".equals(path)) {
             out.print("HTTP/1.1 200 OK\r\n\r\n");
         } else if (path.startsWith("/echo")) {
@@ -73,14 +70,17 @@ public class Connection {
                     "Content-Length: %d\r\n\r\n%s", userAgent.length(), userAgent);
             out.print(response);
         } else if (path.startsWith("/files/")) {
-            String fileName = path.split("/")[2];
-            String directory = args[1];
+            String filePath = path.split("/")[2];
+
+            if (args.length > 1 && args[0].equals("directory")) {
+                filePath = args[1] + filePath;
+            }
             switch (method) {
                 case "GET":
-                    getFile(directory + fileName);
+                    getFile(filePath);
                     break;
                 case "POST":
-                    createFile(directory + fileName);
+                    createFile(filePath);
                     break;
             }
         } else {
