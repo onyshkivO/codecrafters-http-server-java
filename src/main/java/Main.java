@@ -25,14 +25,16 @@ public class Main {
         try {
             init();
             ExecutorService executorService = Executors.newCachedThreadPool();
-            executorService.submit(()-> {
-                try {
-                    processRequest();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            executorService.shutdown();
+            while(true){
+                executorService.submit(()-> {
+                    try {
+                        processRequest();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
         }
