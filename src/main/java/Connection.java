@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -66,6 +63,8 @@ public class Connection {
         } else if (path.startsWith("/files/")) {
             String fileName = path.split("/")[2];
             Path filePath = Paths.get(fileName);
+            System.out.println(fileName);
+            System.out.println(new File(fileName).exists());
             if (Files.exists(filePath)) {
                 Stream<String> lines = Files.lines(filePath);
                 String fileContent = lines.collect(Collectors.joining("\n"));
