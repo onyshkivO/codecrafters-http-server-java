@@ -59,10 +59,12 @@ public class Connection {
         if ("/".equals(path)) {
             out.print("HTTP/1.1 200 OK\r\n\r\n");
         } else if (path.startsWith("/echo")) {
+            String encodingHeadersStr = headers.get("Accept-Encoding");
             String message = path.split("/")[2];
             String response = String.format("HTTP/1.1 200 OK\r\n" +
                     "Content-Type: text/plain\r\n%s" +
-                    "Content-Length: %d\r\n\r\n%s", "gzip".equals(headers.get("Accept-Encoding")) ? "Content-Encoding: gzip\r\n" : "", message.length(), message);
+                    "Content-Length: %d\r\n\r\n%s", encodingHeadersStr != null && Arrays.asList(encodingHeadersStr.split(", ")).contains("gzip") ? "Content-Encoding: gzip\r\n" : "", message.length(), message);
+
             out.print(response);
         } else if (path.startsWith("/user-agent")) {
             String userAgent = headers.get("User-Agent");

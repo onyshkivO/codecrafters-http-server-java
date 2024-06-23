@@ -15,8 +15,6 @@ public class Main {
             while (true) {
                 executorService.execute(() -> {
                     try {
-                        System.out.println(Thread.currentThread().getName());
-                        System.out.println(Arrays.toString(args));
                         new Connection(serverSocket, args).processRequest();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
