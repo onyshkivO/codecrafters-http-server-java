@@ -56,7 +56,8 @@ public class Connection {
     }
 
     private void process() throws IOException {
-
+        System.out.println(path);
+        System.out.println(path.startsWith("/files/"));
         if ("/".equals(path)) {
             out.print("HTTP/1.1 200 OK\r\n\r\n");
         } else if (path.startsWith("/echo")) {
