@@ -61,8 +61,8 @@ public class Connection {
         } else if (path.startsWith("/echo")) {
             String message = path.split("/")[2];
             String response = String.format("HTTP/1.1 200 OK\r\n" +
-                    "Content-Type: text/plain\r\n" +
-                    "Content-Length: %d\r\n\r\n%s", message.length(), message);
+                    "Content-Type: text/plain\r\n%s" +
+                    "Content-Length: %d\r\n\r\n%s", "gzip".equals(headers.get("Accept-Encoding")) ? "Content-Encoding: gzip\r\n" : "", message.length(), message);
             out.print(response);
         } else if (path.startsWith("/user-agent")) {
             String userAgent = headers.get("User-Agent");
