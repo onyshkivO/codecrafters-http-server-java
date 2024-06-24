@@ -82,7 +82,7 @@ public class Connection {
                 message = new String(hexChars);
             }
             String response = String.format("HTTP/1.1 200 OK\r\n" +
-                    "Content-Type: text/plain\r\n%s" +
+                    "%sContent-Type: text/plain\r\n" +
                     "Content-Length: %d\r\n\r\n%s", encodingHeader, message.length(), message);
             out.print(response);
         } else if (path.startsWith("/user-agent")) {
