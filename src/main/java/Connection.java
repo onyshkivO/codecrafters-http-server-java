@@ -78,7 +78,11 @@ public class Connection {
                     "%sContent-Type: text/plain\r\n" +
                     "Content-Length: %d\r\n\r\n", encodingHeader, bytes == null ? message.length() : bytes.length);
             out.print(response);
-            out.print(bytes==null ? message : bytes);
+            if (bytes != null) {
+                clientSocket.getOutputStream().write(bytes);
+            } else {
+                out.print(bytes == null ? message : bytes);
+            }
         } else if (path.startsWith("/user-agent")) {
             String userAgent = headers.get("User-Agent");
             String response = String.format("HTTP/1.1 200 OK\r\n" +
