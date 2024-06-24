@@ -66,17 +66,17 @@ public class Connection {
             String message = path.split("/")[2];
             Optional<String> encodingOptional = Arrays.stream(encodingHeadersStr.split(", ")).filter(encoding -> supportedEncoding.contains(encoding)).findFirst();
             String encodingHeader = encodingOptional.map(s -> String.format("Content-Encoding: %s\r\n", s)).orElse("");
-            byte[] bytes=null;
+            byte[] bytes = null;
             if (encodingHeadersStr.equals("gzip")) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
                 gzip.write(message.getBytes(StandardCharsets.UTF_8));
                 gzip.close();
-                 bytes = outputStream.toByteArray();
+                bytes = outputStream.toByteArray();
             }
             String response = String.format("HTTP/1.1 200 OK\r\n" +
                     "%sContent-Type: text/plain\r\n" +
-                    "Content-Length: %d\r\n\r\n%s", encodingHeader, bytes==null ? message.length() : bytes.length, bytes == null ? message : bytes);
+                    "Content-Length: %d\r\n\r\n%s", encodingHeader, bytes == null ? message.length() : bytes.length, bytes == null ? message : new String(bytes, StandardCharsets.UTF_8));
             out.print(response);
         } else if (path.startsWith("/user-agent")) {
             String userAgent = headers.get("User-Agent");
