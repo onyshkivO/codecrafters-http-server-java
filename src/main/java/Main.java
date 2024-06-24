@@ -11,17 +11,16 @@ public class Main {
     public static void main(String[] args) {
         try {
             init();
-            new Connection(serverSocket, args).processRequest();
-//            ExecutorService executorService = Executors.newFixedThreadPool(10);
-//            while (true) {
-//                executorService.execute(() -> {
-//                    try {
-//                        new Connection(serverSocket, args).processRequest();
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                });
-//            }
+            ExecutorService executorService = Executors.newFixedThreadPool(10);
+            while (true) {
+                executorService.execute(() -> {
+                    try {
+                        new Connection(serverSocket, args).processRequest();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
 
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());

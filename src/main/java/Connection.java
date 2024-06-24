@@ -66,24 +66,17 @@ public class Connection {
             String message = path.split("/")[2];
             Optional<String> encodingOptional = Arrays.stream(encodingHeadersStr.split(", ")).filter(encoding -> supportedEncoding.contains(encoding)).findFirst();
             String encodingHeader = encodingOptional.map(s -> String.format("Content-Encoding: %s\r\n", s)).orElse("");
+            byte[] bytes=null;
             if (encodingHeadersStr.equals("gzip")) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
                 gzip.write(message.getBytes(StandardCharsets.UTF_8));
                 gzip.close();
-                byte[] bytes = outputStream.toByteArray();
-                char[] hexChars = new char[bytes.length * 2];
-                for (int j = 0; j < bytes.length; j++) {
-                    int v = bytes[j] & 0xFF;
-                    hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-                    hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-                }
-
-                message = new String(hexChars);
+                 bytes = outputStream.toByteArray();
             }
             String response = String.format("HTTP/1.1 200 OK\r\n" +
                     "%sContent-Type: text/plain\r\n" +
-                    "Content-Length: %d\r\n\r\n%s", encodingHeader, message.length(), message);
+                    "Content-Length: %d\r\n\r\n%s", encodingHeader, bytes==null ? message.length() : bytes.length, bytes == null ? message : bytes);
             out.print(response);
         } else if (path.startsWith("/user-agent")) {
             String userAgent = headers.get("User-Agent");
