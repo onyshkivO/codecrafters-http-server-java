@@ -77,7 +77,7 @@ public class Connection {
             String response = String.format("HTTP/1.1 200 OK\r\n" +
                     "%sContent-Type: text/plain\r\n" +
                     "Content-Length: %d\r\n\r\n", encodingHeader, bytes == null ? message.length() : bytes.length);
-            out.print(response);
+//            out.print(response);
             clientSocket.getOutputStream().write(response.getBytes(StandardCharsets.UTF_8));
 
             out.print(bytes == null ? message.getBytes(StandardCharsets.UTF_8) : bytes);
